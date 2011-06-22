@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% if project.parent_id >= 0 %}
+<p>&gt; <a href="{{ url_for('project', name=project.parent.name) }}">{{ project.parent.name }}</a></p>
+{% endif %}
+<h4>구성원</h4>
+<form name="addmember" action="{{ url_for('project_add_member', name=project.name) }}" method="POST">
+새 구성원 추가: {{ user_select_form('user') }}
+하는 일:<input type="textfield" name="name" />
+<input type="submit" />
+</form>
+<ul>
+{% for member in project.members %}
+<li><a href="{{ url_for('user', name=member.user.name) }}">{{ member.user.name }}</a>{% if member.name %}({{ member.name }}){% endif %}</li>
+{% else %}
+<p>등록된 구성원이 없습니다.</p>
+{% endfor %}
+</ul>
+<h4>프로젝트</h4>
+<form name="addproj" action="{{ url_for('project_add_subproj', name=project.name) }}" method="POST">
+새 프로젝트 추가: <input type="textfield" name="name" />
+<input type="submit" />
+</form>
+<ul>
+{% for child in project.children %}
+<li><a href="{{ url_for('project', name=child.name) }}">{{ child.name }}</a></li>
+{% else %}
+<p>등록된 하위 프로젝트가 없습니다.</p>
+{% endfor %}
+</ul>
+<h5>작업</h5>
+<form name="addjob" action="{{ url_for('project_add_job', name=project.name) }}" method="POST">
+새 작업 추가: <input type="textfield" name="name" />
+<input type="submit" />
+</form>
+<ul>
+{% for job in project.jobs if job.name %}
+<li>{{ job.name }} <a href="#">찰싹!</a></li>
+{% else %}
+<p>등록된 작업이 없습니다.</p>
+{% endfor %}
+{% endblock %}
+</ul>
